@@ -1,19 +1,29 @@
 #!/bin/bash
 #
 # Author :
+<<<<<<< HEAD
 # Date : 220607
 # Version : 0.8.0.3
+=======
+# Date : 220603
+# Version : 0.9.0.2
+>>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
 #
 #
 # User Variables :
 
+<<<<<<< HEAD
 rploaderver="0.8.0.3"
 build="main"
+=======
+rploaderver="0.9.0.2"
+build="develop"
+>>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
-redpillextension="https://github.com/pocopico/rp-ext/raw/$build/redpill/rpext-index.json"
-modextention="https://github.com/pocopico/rp-ext/raw/$build/rpext-index.json"
+redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/dtc"
@@ -51,11 +61,55 @@ function history() {
     0.7.1.8 Updated satamap function to fine tune SATA port identification and identify SATABOOT
     0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
     0.8.0.0 Stable version. All new features will be moved to develop repo
+<<<<<<< HEAD
     0.8.0.1 Updated postupdate to facilitate update to update2
     0.8.0.2 Updated satamap to support DUMMY PORT detection 
     0.8.0.3 Updated satamap to avoid the use of 0 in first controller that cause KP
+=======
+    0.9.0.0 Development version. Moving all new features to development build
+    0.9.0.1 Updated postupdate to facilitate update to update2
+    0.9.0.2 Added system monitor function 
+>>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function monitor() {
+
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    mount /dev/${loaderdisk}1
+    mount /dev/${loaderdisk}2
+
+    while true; do
+        clear
+        echo -e "-------------------------------System Information----------------------------"
+        echo -e "Hostname:\t\t"$(hostname) "uptime:\t\t\t"$(uptime | awk '{print $3,$4}' | sed 's/,//')
+        echo -e "Manufacturer:\t\t"$(cat /sys/class/dmi/id/chassis_vendor) "Product Name:\t\t"$(cat /sys/class/dmi/id/product_name)
+        echo -e "Version:\t\t"$(cat /sys/class/dmi/id/product_version)
+        echo -e "Serial Number:\t\t"$(sudo cat /sys/class/dmi/id/product_serial)
+        echo -e "Machine Type:\t\t"$(
+            vserver=$(lscpu | grep Hypervisor | wc -l)
+            if [ $vserver -gt 0 ]; then echo "VM"; else echo "Physical"; fi
+        ) "Operating System:\t"$(grep PRETTY_NAME /etc/os-release | awk -F \= '{print $2}')
+        echo -e "Kernel:\t\t\t"$(uname -r)
+        echo -e ""$(lscpu | head -1)"\t" "Processor Name:\t\t"$(awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//')
+        echo -e "Active Users:\t\t"$(who -u | cut -d ' ' -f1 | grep -v USER | xargs -n1)
+        echo -e "System Main IP:\t\t"$(ifconfig | grep inet | awk '{print $2}' | awk -F \: '{print $2}')
+        [ $(ps -ef | grep -i sshd | wc -l) -gt 0 ] && echo -e "SSHD connections ready" || echo -e "SSHD connections not ready"
+        echo -e "-------------------------------Loader boot entries------------------------------"
+        grep -i menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F \' '{print $2}'
+        echo -e "-------------------------------CPU/Memory Usage------------------------------"
+        echo -e "Memory Usage:\t"$(free | awk '/Mem/{printf("%.2f%"), $3/$2*100}')
+        echo -e "Swap Usage:\t"$(free | awk '/Swap/{printf("%.2f%"), $3/$2*100}')
+        echo -e "CPU Usage:\t"$(cat /proc/stat | awk '/cpu/{printf("%.2f%\n"), ($2+$4)*100/($2+$4+$5)}' | awk '{print $0}' | head -1)
+        echo -e "-------------------------------Disk Usage >80%-------------------------------"
+        df -Ph | grep -v loop
+        [ $(lscpu | grep Hypervisor | wc -l) -gt 0 ] && echo "$(hostname) is a VM"
+
+        echo "Press ctrl-c to exti"
+        sleep 10
+    done
 
 }
 
@@ -515,6 +569,10 @@ function postupdate() {
     fi
 
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
 function postupdatev1() {
 
     echo "Mounting root to get the latest dsmroot patch in /.syno/patch "
@@ -1742,7 +1800,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate,
-mountshare, version, help
+mountshare, version, monitor, help
 
 ----------------------------------------------------------------------------------------
 Available platform versions:
@@ -1763,7 +1821,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate, 
-mountshare, version, help 
+mountshare, version, monitor, help 
 
 - build <platform> <option> : 
   Build the 💊 RedPill LKM and update the loader image for the specified platform version and update
@@ -1835,6 +1893,9 @@ mountshare, version, help
   Prints rploader version and if the history option is passed then the version history is listed.
 
   Valid Options : history, shows rploader release history.
+
+- monitor 
+  Prints system statistics related to TCRP loader 
   
 - help:           Show this page
 
@@ -2640,6 +2701,10 @@ version)
 help)
     showhelp
     exit 99
+    ;;
+monitor)
+    monitor
+    exit 0
     ;;
 *)
     showsyntax
