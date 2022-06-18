@@ -2,21 +2,30 @@
 #
 # Author :
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Date : 220607
 # Version : 0.8.0.3
 =======
 # Date : 220603
 # Version : 0.9.0.2
 >>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
+=======
+# Date : 220607
+# Version : 0.9.0.4
+>>>>>>> 8464c5c2ae74718626144b67fa2be68162273aad
 #
 #
 # User Variables :
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 rploaderver="0.8.0.3"
 build="main"
 =======
 rploaderver="0.9.0.2"
+=======
+rploaderver="0.9.0.4"
+>>>>>>> 8464c5c2ae74718626144b67fa2be68162273aad
 build="develop"
 >>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
@@ -69,7 +78,12 @@ function history() {
     0.9.0.0 Development version. Moving all new features to development build
     0.9.0.1 Updated postupdate to facilitate update to update2
     0.9.0.2 Added system monitor function 
+<<<<<<< HEAD
 >>>>>>> d9519540b75ef350c83d5807d0633cbb138abb68
+=======
+    0.9.0.3 Updated satamap to support DUMMY PORT detection 
+    0.9.0.4 More satamap fixes
+>>>>>>> 8464c5c2ae74718626144b67fa2be68162273aad
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1364,7 +1378,11 @@ function satamap() {
         lspci -d ::104
         lspci -d ::107 | awk '{print $1}'
     )
+<<<<<<< HEAD
     [ ! -z "$pcis" ] && echo ""
+=======
+    [ ! -z "$pcis" ] && echo
+>>>>>>> 8464c5c2ae74718626144b67fa2be68162273aad
     # loop through non-SATA controllers
     for pci in $pcis; do
         # get attached block devices (exclude CD-ROMs)
